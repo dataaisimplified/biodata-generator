@@ -74,46 +74,44 @@ button{
 .photo-box img{width:100%;height:100%;object-fit:cover;}
 
 /* MOBILE */
+
+/* ===== MOBILE GRID ===== */
 @media(max-width:768px){
 
-  /* LAYOUT */
   .content {
     display:grid;
-    grid-template-columns: 1fr 100px;
+    grid-template-columns: 1fr 120px;
     gap:10px;
-  }
-
-  .photo-box {
-    grid-column:2;
-    width:100px;
-    height:130px;
   }
 
   .details {
     grid-column:1;
   }
 
-  /* 🔥 REAL FIX */
+  .photo-box {
+    grid-column:2;
+    width:120px;
+    height:160px;
+  }
+
+  /* 🔥 FIX TEXT LAYOUT */
   .row {
-    display:block;
-    margin-bottom:14px;
+    flex-direction:column;
+    margin-bottom:10px;
   }
 
   .label {
     width:auto;
-    font-size:14px;
     font-weight:600;
     margin-bottom:2px;
   }
 
   .colon {
-    display:none;   /* ❌ remove colon on mobile */
+    display:none;
   }
 
   .value {
     font-size:14px;
-    line-height:1.4;
-    word-break:break-word;
   }
 
 }
