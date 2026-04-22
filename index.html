@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Biodata Generator Pro</title>
+<title>Biodata Generator</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 
@@ -233,7 +233,7 @@ button {
 
 <div class="header">ॐ श्री गणेशाय नमः</div>
 
-<div class="content">
+<div class="content" id="content">
 
 <div class="details">
 <div id="basic"></div>
@@ -375,21 +375,41 @@ function loadPhoto(){
 /* PDF */
 async function downloadPDF(){
   const { jsPDF } = window.jspdf;
+
+  const contentEl = document.getElementById("content");
+
+  // store original layout
+  const original = contentEl.style.display;
+
+  // force FLEX for correct rendering
+  contentEl.style.display = "flex";
+
   const canvas = await html2canvas(biodata,{scale:2});
   const img = canvas.toDataURL("image/png");
 
   const pdf = new jsPDF("p","mm","a4");
   pdf.addImage(img,"PNG",0,0,210,297);
   pdf.save("biodata.pdf");
+
+  // restore layout
+  contentEl.style.display = original;
 }
 
 /* IMAGE */
 function downloadImage(){
+
+  const contentEl = document.getElementById("content");
+  const original = contentEl.style.display;
+
+  contentEl.style.display = "flex";
+
   html2canvas(biodata,{scale:2}).then(canvas=>{
     const link=document.createElement("a");
     link.download="biodata.png";
     link.href=canvas.toDataURL();
     link.click();
+
+    contentEl.style.display = original;
   });
 }
 
