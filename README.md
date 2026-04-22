@@ -1,1 +1,1 @@
-# BioDataPage
+# biodata-generator
