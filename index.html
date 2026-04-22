@@ -50,7 +50,6 @@ body {
   border-radius:5px;
 }
 
-/* BUTTON */
 button {
   padding:10px;
   margin:5px 0;
@@ -66,8 +65,8 @@ button {
   flex:1;
   display:flex;
   justify-content:center;
-  align-items:center;
-  background:#5c0a0a;
+  align-items:flex-start;
+  background:#1e88e5;
   padding:10px;
 }
 
@@ -75,12 +74,14 @@ button {
 .biodata {
   width:100%;
   max-width:800px;
-  padding:25px;
+  padding:20px;
+  color:#fff;
+  border:6px solid #ddd;
 }
 
 .inner {
-  border:2px solid currentColor;
-  padding:25px;
+  border:2px solid #ddd;
+  padding:20px;
 }
 
 .header {
@@ -89,20 +90,23 @@ button {
   margin-bottom:20px;
 }
 
+/* ===== DESKTOP LAYOUT ===== */
 .content {
   display:flex;
-  flex-wrap:wrap;
   gap:20px;
+  align-items:flex-start;
 }
 
-.details { flex:1; }
+.details {
+  flex:1;
+}
 
 .row {
   display:flex;
   margin:8px 0;
 }
 
-.label { width:150px; }
+.label { width:140px; }
 .colon { width:10px; }
 .value { flex:1; }
 
@@ -112,10 +116,12 @@ button {
   border-bottom:1px solid currentColor;
 }
 
+/* IMAGE */
 .photo-box {
-  width:150px;
-  height:200px;
-  border:3px solid currentColor;
+  width:180px;
+  height:220px;
+  border:3px solid #ddd;
+  flex-shrink:0;
 }
 
 .photo-box img {
@@ -124,21 +130,43 @@ button {
   object-fit:cover;
 }
 
-/* ===== 10 PREMIUM TEMPLATES ===== */
+/* ===== MOBILE GRID FIX ===== */
+@media(max-width:768px){
 
-/* Royal */
-.template-royal-red { background:linear-gradient(#7a0c0c,#3a0606); color:#f5d08a; border:10px solid #e6b566; }
-.template-royal-gold { background:#fff8e1; color:#5a3e1b; border:10px solid gold; }
-.template-maharaja { background:#5a0f0f; color:#ffd700; border:10px solid #ffd700; }
-.template-temple { background:#fff8e7; color:#5c3d00; border:8px solid #c9a227; }
-.template-floral { background:#fff0f5; color:#8b004b; border:6px solid #ff69b4; }
+  .content {
+    display:grid;
+    grid-template-columns: 1fr 120px;
+    gap:10px;
+    align-items:start;
+  }
 
-/* Modern */
-.template-minimal { background:#fff; color:#000; }
-.template-modern-dark { background:#0f172a; color:#e2e8f0; border:2px solid #334155; }
-.template-pastel { background:#fef6ff; color:#6b21a8; border:4px solid #d8b4fe; }
-.template-elegant { background:#f5f5f5; color:#333; border:2px solid #bbb; }
-.template-blue { background:linear-gradient(#0ea5e9,#0369a1); color:#fff; border:6px solid #38bdf8; }
+  .details {
+    grid-column:1;
+    grid-row:1;
+  }
+
+  .photo-box {
+    grid-column:2;
+    grid-row:1;
+    width:120px;
+    height:160px;
+  }
+
+  .label {
+    width:110px;
+    font-size:13px;
+  }
+
+  .value {
+    font-size:13px;
+  }
+
+}
+
+/* ===== TEMPLATE ===== */
+.template-blue {
+  background:linear-gradient(#2196f3,#1565c0);
+}
 
 </style>
 </head>
@@ -149,19 +177,6 @@ button {
 <div class="form">
 
 <h3>Biodata Builder</h3>
-
-<select id="templateSelect">
-  <option value="royal-red">Royal Red</option>
-  <option value="royal-gold">Royal Gold</option>
-  <option value="maharaja">Maharaja</option>
-  <option value="temple">Temple</option>
-  <option value="floral">Floral</option>
-  <option value="minimal">Minimal</option>
-  <option value="modern-dark">Modern Dark</option>
-  <option value="pastel">Pastel</option>
-  <option value="elegant">Elegant</option>
-  <option value="blue">Blue</option>
-</select>
 
 <div id="fields"></div>
 
@@ -177,7 +192,7 @@ button {
 <!-- PREVIEW -->
 <div class="preview">
 
-<div id="biodata" class="biodata template-royal-red">
+<div id="biodata" class="biodata template-blue">
 
 <div class="inner">
 
@@ -216,10 +231,6 @@ const defaults = [
 ["Time Of Birth","basic"],
 ["Height","basic"],
 ["Weight","basic"],
-["Caste","basic"],
-["Gotra","basic"],
-["Education","basic"],
-["Occupation","basic"],
 ["Father Name","family"],
 ["Mother Name","family"],
 ["Phone","contact"],
@@ -231,8 +242,6 @@ window.onload = init;
 function init(){
   fields.innerHTML="";
   defaults.forEach(f=>createField(f[0],f[1]));
-  loadTemplate();
-  loadPhoto();
   update();
 }
 
@@ -285,38 +294,21 @@ function update(){
   });
 }
 
-/* TEMPLATE */
-templateSelect.onchange = ()=>{
-  biodata.className="biodata template-"+templateSelect.value;
-  localStorage.setItem("template",templateSelect.value);
-};
-
-function loadTemplate(){
-  const t=localStorage.getItem("template")||"royal-red";
-  templateSelect.value=t;
-  biodata.className="biodata template-"+t;
-}
-
 /* PHOTO */
 photo.onchange = e=>{
   const reader=new FileReader();
   reader.onload=e=>{
     previewPhoto.src=e.target.result;
-    localStorage.setItem("photo",e.target.result);
   };
   reader.readAsDataURL(e.target.files[0]);
 };
-
-function loadPhoto(){
-  const p=localStorage.getItem("photo");
-  if(p) previewPhoto.src=p;
-}
 
 /* PDF */
 async function downloadPDF(){
   const { jsPDF } = window.jspdf;
   const canvas = await html2canvas(biodata,{scale:2});
   const img = canvas.toDataURL("image/png");
+
   const pdf = new jsPDF("p","mm","a4");
   pdf.addImage(img,"PNG",0,0,210,297);
   pdf.save("biodata.pdf");
