@@ -128,13 +128,16 @@ button {
 
 /* ===== MOBILE GRID ===== */
 @media(max-width:768px){
+
   .content {
     display:grid;
     grid-template-columns: 1fr 120px;
     gap:10px;
   }
 
-  .details { grid-column:1; }
+  .details {
+    grid-column:1;
+  }
 
   .photo-box {
     grid-column:2;
@@ -142,8 +145,26 @@ button {
     height:160px;
   }
 
-  .label { width:110px; font-size:13px; }
-  .value { font-size:13px; }
+  /* 🔥 FIX TEXT LAYOUT */
+  .row {
+    flex-direction:column;
+    margin-bottom:10px;
+  }
+
+  .label {
+    width:auto;
+    font-weight:600;
+    margin-bottom:2px;
+  }
+
+  .colon {
+    display:none;
+  }
+
+  .value {
+    font-size:14px;
+  }
+
 }
 
 /* ===== FORCE FLEX FOR PDF ===== */
