@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Biodata Generator</title>
+<title>Biodata Generator Pro</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 
@@ -66,8 +66,9 @@ button {
   display:flex;
   justify-content:center;
   align-items:flex-start;
-  background:#1e88e5;
+  background:#eee;
   padding:10px;
+  overflow:auto;
 }
 
 /* ===== BIODATA ===== */
@@ -75,12 +76,11 @@ button {
   width:100%;
   max-width:800px;
   padding:20px;
-  color:#fff;
-  border:6px solid #ddd;
+  box-sizing:border-box;
 }
 
 .inner {
-  border:2px solid #ddd;
+  border:2px solid currentColor;
   padding:20px;
 }
 
@@ -99,6 +99,7 @@ button {
 
 .details {
   flex:1;
+  min-width:0;
 }
 
 .row {
@@ -106,9 +107,19 @@ button {
   margin:8px 0;
 }
 
-.label { width:140px; }
-.colon { width:10px; }
-.value { flex:1; }
+.label {
+  width:140px;
+  flex-shrink:0;
+}
+
+.colon {
+  width:10px;
+}
+
+.value {
+  flex:1;
+  word-break:break-word;
+}
 
 .section-title {
   margin-top:15px;
@@ -120,7 +131,7 @@ button {
 .photo-box {
   width:180px;
   height:220px;
-  border:3px solid #ddd;
+  border:3px solid currentColor;
   flex-shrink:0;
 }
 
@@ -163,10 +174,21 @@ button {
 
 }
 
-/* ===== TEMPLATE ===== */
-.template-blue {
-  background:linear-gradient(#2196f3,#1565c0);
-}
+/* ===== 10 TEMPLATES ===== */
+
+/* Royal */
+.template-royal-red { background:linear-gradient(#7a0c0c,#3a0606); color:#f5d08a; border:10px solid #e6b566; }
+.template-royal-gold { background:#fff8e1; color:#5a3e1b; border:10px solid gold; }
+.template-maharaja { background:#5a0f0f; color:#ffd700; border:10px solid #ffd700; }
+.template-temple { background:#fff8e7; color:#5c3d00; border:8px solid #c9a227; }
+.template-floral { background:#fff0f5; color:#8b004b; border:6px solid #ff69b4; }
+
+/* Modern */
+.template-minimal { background:#fff; color:#000; }
+.template-modern-dark { background:#0f172a; color:#e2e8f0; border:2px solid #334155; }
+.template-pastel { background:#fef6ff; color:#6b21a8; border:4px solid #d8b4fe; }
+.template-elegant { background:#f5f5f5; color:#333; border:2px solid #bbb; }
+.template-blue { background:linear-gradient(#2196f3,#1565c0); color:#fff; border:6px solid #ddd; }
 
 </style>
 </head>
@@ -177,6 +199,19 @@ button {
 <div class="form">
 
 <h3>Biodata Builder</h3>
+
+<select id="templateSelect">
+  <option value="royal-red">Royal Red</option>
+  <option value="royal-gold">Royal Gold</option>
+  <option value="maharaja">Maharaja</option>
+  <option value="temple">Temple</option>
+  <option value="floral">Floral</option>
+  <option value="minimal">Minimal</option>
+  <option value="modern-dark">Modern Dark</option>
+  <option value="pastel">Pastel</option>
+  <option value="elegant">Elegant</option>
+  <option value="blue">Blue</option>
+</select>
 
 <div id="fields"></div>
 
@@ -231,6 +266,10 @@ const defaults = [
 ["Time Of Birth","basic"],
 ["Height","basic"],
 ["Weight","basic"],
+["Caste","basic"],
+["Gotra","basic"],
+["Education","basic"],
+["Occupation","basic"],
 ["Father Name","family"],
 ["Mother Name","family"],
 ["Phone","contact"],
@@ -239,12 +278,16 @@ const defaults = [
 
 window.onload = init;
 
+/* INIT */
 function init(){
   fields.innerHTML="";
   defaults.forEach(f=>createField(f[0],f[1]));
+  loadTemplate();
+  loadPhoto();
   update();
 }
 
+/* CREATE FIELD */
 function createField(label,section){
   const div=document.createElement("div");
   div.className="field";
@@ -262,6 +305,7 @@ function createField(label,section){
   fields.appendChild(div);
 }
 
+/* ADD */
 function addField(){
   createField("New Field","basic");
 }
@@ -294,14 +338,32 @@ function update(){
   });
 }
 
+/* TEMPLATE SWITCH */
+templateSelect.onchange = ()=>{
+  biodata.className="biodata template-"+templateSelect.value;
+  localStorage.setItem("template",templateSelect.value);
+};
+
+function loadTemplate(){
+  const t = localStorage.getItem("template") || "blue";
+  templateSelect.value = t;
+  biodata.className = "biodata template-" + t;
+}
+
 /* PHOTO */
 photo.onchange = e=>{
   const reader=new FileReader();
   reader.onload=e=>{
     previewPhoto.src=e.target.result;
+    localStorage.setItem("photo",e.target.result);
   };
   reader.readAsDataURL(e.target.files[0]);
 };
+
+function loadPhoto(){
+  const p=localStorage.getItem("photo");
+  if(p) previewPhoto.src=p;
+}
 
 /* PDF */
 async function downloadPDF(){
